@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:paddingTop="@dimen/headerTop" >
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="1dp" >
+
+        <Button
+            android:id="@+id/bookNowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_booknow_final"
+            android:paddingBottom="@dimen/bookNowButtonPadding"
+            android:paddingTop="@dimen/bookNowButtonPadding"
+            android:text="@string/bookNowButton"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/buttons" >
+
+        <!-- Scrollable content here -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/bookNowBottom"
+            android:paddingLeft="@dimen/headerTop"
+            android:paddingRight="@dimen/headerTop" >
+
+            <RelativeLayout
+                android:id="@+id/header01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/book_now_header1"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/headerBottom"
+                android:paddingLeft="@dimen/headerLeft"
+                android:paddingTop="@dimen/headerTop" >
+
+                <TextView
+                    android:id="@+id/timeDigit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="#"
+                    android:textColor="@color/cardMobNum"
+                    android:textSize="@dimen/pickupRowName" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mainBody"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/header02" >
+
+                <TextView
+                    android:id="@+id/textAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/amount"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottom"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="Amount"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/underline_edittext"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:textColorHint="@color/separator" />
+
+                <TextView
+                    android:id="@+id/textAmountCollected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/amountCollected"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottom"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/amountCollectedHint"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/amountCollected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/amount"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/underline_edittext"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:textColorHint="@color/separator" />
+                
+                <TextView
+                    android:id="@+id/textNoOfShip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/noOfShip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottom"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/noOfShip"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/noOfShip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/amountCollected"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/underline_edittext"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="1"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:textColorHint="@color/separator" />
+                
+
+                <TextView
+                    android:id="@+id/textCustMobNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/custMobNum"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottom"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/custMobNoHint"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/custMobNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/noOfShip"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/underline_edittext"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:textColorHint="@color/separator" />
+
+                <TextView
+                    android:id="@+id/textCustName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/custName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottom"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerName"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+                
+                <EditText
+                    android:id="@+id/custName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/custMobNum"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/underline_edittext"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:textColorHint="@color/separator" />
+                
+                <TextView
+                    android:id="@+id/textCustAdrress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/custAddress"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottomExtra"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerAdd"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/custAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/custName"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/line_edittext"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:singleLine="true"
+                    android:textColorHint="@color/separator" />
+
+                <TextView
+                    android:id="@+id/textStreet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/street"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottomExtra"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerStreet"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+                
+                <EditText
+                    android:id="@+id/street"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/custAddress"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/line_edittext"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:singleLine="true"
+                    android:textColorHint="@color/separator" />
+
+                <TextView
+                    android:id="@+id/textArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/area"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottomExtra"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerArea"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+                
+                <EditText
+                    android:id="@+id/area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/street"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/line_edittext"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:singleLine="true"
+                    android:textColorHint="@color/separator" />
+                
+                <TextView
+                    android:id="@+id/textCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/city"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottomExtra"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerCity"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/area"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/line_edittext"
+                    android:ems="10"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:singleLine="true"
+                    android:textColorHint="@color/separator" />
+                
+                <TextView
+                    android:id="@+id/textPincode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/pincode"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="@dimen/bookNowHintBottomExtra"
+                    android:paddingLeft="@dimen/bookNowHintLeft"
+                    android:text="@string/customerPincode"
+                    android:textColor="@color/bookNowHints"
+                    android:textSize="@dimen/bookNowHints" />
+
+                <EditText
+                    android:id="@+id/pincode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/city"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/elementVerticalSpace"
+                    android:background="@drawable/line_edittext"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:paddingLeft="@dimen/editTextPadding"
+                    android:singleLine="true"
+                    android:textColorHint="@color/separator" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
