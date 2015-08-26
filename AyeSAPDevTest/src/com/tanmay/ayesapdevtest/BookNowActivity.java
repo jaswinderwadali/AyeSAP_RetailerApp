@@ -263,7 +263,7 @@ public class BookNowActivity extends Activity {
 											String resType = sharedPreferences
 													.getString("resType", null);
 											jsonObj.put("orderAmount",
-													orderAmount);
+													amountText);
 											jsonObj.put("shipment",
 													noOfShipText);
 											jsonObj.put("paymentType", "COD");
@@ -409,7 +409,7 @@ public class BookNowActivity extends Activity {
 							String resType = sharedPreferences.getString(
 									"resType", null);
 
-							jsonObj.put("orderAmount", orderAmount);
+							jsonObj.put("orderAmount", amountText);
 							jsonObj.put("shipment", noOfShipText);
 							jsonObj.put("paymentType", "COD");
 							jsonObj.put("resourceType", resType);
@@ -505,6 +505,13 @@ public class BookNowActivity extends Activity {
 						NetworkResponse response = error.networkResponse;
 						if (response != null && response.data != null) {
 							switch (response.statusCode) {
+							case 400:
+								jsonString = new String(response.data);
+								jsonString = trimMessage(jsonString, "message");
+								if (jsonString != null)
+									displayMessage(jsonString);
+								break;
+
 							case 401:
 								jsonString = new String(response.data);
 								jsonString = trimMessage(jsonString, "message");

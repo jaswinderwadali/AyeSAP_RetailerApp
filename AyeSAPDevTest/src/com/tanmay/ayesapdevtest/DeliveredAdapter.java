@@ -105,14 +105,25 @@ public class DeliveredAdapter extends BaseExpandableListAdapter {
 		TextView dbName = (TextView) convertview.findViewById(R.id.dbName);
 		TextView dbNumber = (TextView) convertview.findViewById(R.id.dbNumber);
 		TextView time = (TextView) convertview.findViewById(R.id.time);
+		TextView timeUnits = (TextView) convertview.findViewById(R.id.timeUnits);
 		TextView orderId = (TextView) convertview.findViewById(R.id.orderId);
 		TextView orderAmt = (TextView) convertview.findViewById(R.id.amount);
+		TextView status = (TextView) convertview.findViewById(R.id.statusText);
+		
+		if(parentItems.getDelTime() == -5){
+			time.setVisibility(View.GONE);
+			timeUnits.setVisibility(View.GONE);
+			status.setText(parentItems.getStatus());
+		}
+		
+		else {
+			time.setText(parentItems.getDelTime() + "");
+		}
 		
 		orderId.setText(parentItems.getOrderId());
 		customerMob.setText(parentItems.getCustomerMobile());
 		dbName.setText(parentItems.getResName());
 		dbNumber.setText(parentItems.getResMobile());
-		time.setText(parentItems.getDelTime() + "");
 		orderAmt.setText(parentItems.getOrderAmount());
 
 		return convertview;

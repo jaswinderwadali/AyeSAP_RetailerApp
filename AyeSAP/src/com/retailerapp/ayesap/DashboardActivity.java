@@ -376,6 +376,19 @@ public class DashboardActivity extends AppCompatActivity implements
 	protected void onResume() {
 		super.onResume();
 		isPaused = false;
+		
+		mMap.clear();
+		bookNowButton(false);
+		if (!isPaused) {
+			noInternet.networkError(context);
+			if (noInternet.isOnline(context)) {
+
+				setUserMarker(uLat, uLng);
+				makeRiderReq(postRider);
+			}
+		}
+
+		
 	};
 
 	@Override

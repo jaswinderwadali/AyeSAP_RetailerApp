@@ -52,7 +52,7 @@ public class DeliveredActivity extends AppCompatActivity implements FetchData {
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		TextView title = (TextView) toolbar.findViewById(R.id.title);
-		title.setText("Delivered");
+		title.setText("Completed");
 
 		latestData = new LatestData(context, DeliveredActivity.this);
 

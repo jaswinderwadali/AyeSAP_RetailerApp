@@ -106,12 +106,14 @@ public class PickupNewAdapter extends BaseExpandableListAdapter {
 		TextView dbNumber = (TextView) convertview.findViewById(R.id.dbNumber);
 		TextView bookedAt = (TextView) convertview.findViewById(R.id.time);
 		TextView orderAmt = (TextView) convertview.findViewById(R.id.amount);
+		TextView status = (TextView) convertview.findViewById(R.id.statusText);
 		
 		orderId.setText(parentItems.getOrderId());
 		customerMob.setText(parentItems.getCustomerMobile());
 		dbName.setText(parentItems.getResName());
 		dbNumber.setText(parentItems.getResMobile());
 		orderAmt.setText(parentItems.getOrderAmount());
+		status.setText(parentItems.getStatus());
 
 		String bookNT = parentItems.getBookNowTime();
 

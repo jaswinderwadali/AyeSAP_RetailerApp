@@ -68,7 +68,7 @@ public class DashboardActivity extends AppCompatActivity implements
 	Editor editor;
 
 	String TITLES[] = { "Home", "Out for Pickup", "Out for Delivery",
-			"Delivered", "Order Summary", "Settings", "About AyeSAP" };
+			"Completed", "Order Summary", "Settings", "About AyeSAP" };
 	int PROFILE = R.drawable.dp;
 
 	String rDetails, NAME, zone, userLat, userLng, retType, retLatitude,
@@ -201,9 +201,18 @@ public class DashboardActivity extends AppCompatActivity implements
 		noInternet.networkError(context);
 		if (noInternet.isOnline(context)) {
 
-			makeRiderReq(postRider);
+			long currReqTime = System.currentTimeMillis();
+			Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+			long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+			Log.d("Dashboard_LastRiderRequest", lastReq+"");
+			long timeGap = currReqTime - lastReq;
+			Log.d("Dashboard_RequestTimeGap", timeGap+"");
+			if(timeGap > 180000){
+				makeRiderReq(postRider);
+			}
+			
 		}
-		handler.postDelayed(timedTask, 60000);
+		handler.postDelayed(timedTask, 180000);
 	}
 
 	Runnable timedTask = new Runnable() {
@@ -216,10 +225,18 @@ public class DashboardActivity extends AppCompatActivity implements
 				if (noInternet.isOnline(context)) {
 
 					setUserMarker(uLat, uLng);
-					makeRiderReq(postRider);
+					long currReqTime = System.currentTimeMillis();
+					Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+					long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+					Log.d("Dashboard_LastRiderRequest", lastReq+"");
+					long timeGap = currReqTime - lastReq;
+					Log.d("Dashboard_RequestTimeGap", timeGap+"");
+					if(timeGap > 180000){
+						makeRiderReq(postRider);
+					}
 				}
 			}
-			handler.postDelayed(timedTask, 60000);
+			handler.postDelayed(timedTask, 180000);
 
 		}
 	};
@@ -267,11 +284,17 @@ public class DashboardActivity extends AppCompatActivity implements
 	private void makeRiderReq(JSONObject jObject) {
 		// TODO Auto-generated method stub
 		Log.d("Dashboard_Rider_Request", jObject.toString());
-		
+
 		JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST, url,
 				jObject, new Response.Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject response) {
+						
+						long lastReqTime = System.currentTimeMillis();
+						editor.putLong("lastRidReq", lastReqTime);
+						editor.commit();
+						Log.d("Dashboard_LastRiderRequest", lastReqTime+"");
+						
 						Log.d("Dashboard_Rider_Response", response.toString());
 						JSONObject details, rider;
 						JSONArray resourceList;
@@ -287,14 +310,14 @@ public class DashboardActivity extends AppCompatActivity implements
 										.getJSONObject("nearestRider");
 								int leastETA = 0;
 								String resType = "";
-//								if (nearestRider.toString().equals("{}")) {
-									leastETA = details.getInt("eta");
-									resType = details.getString("resourceType");
-//								} else {
-//									leastETA = nearestRider.getInt("eta");
-//									resType = nearestRider
-//											.getString("resourceType");
-//								}
+								// if (nearestRider.toString().equals("{}")) {
+								leastETA = details.getInt("eta");
+								resType = details.getString("resourceType");
+								// } else {
+								// leastETA = nearestRider.getInt("eta");
+								// resType = nearestRider
+								// .getString("resourceType");
+								// }
 								editor.putInt("leastETA", leastETA);
 								editor.putString("resType", resType);
 								editor.commit();
@@ -320,7 +343,7 @@ public class DashboardActivity extends AppCompatActivity implements
 								}
 								Log.d("Dashboard_ALLRiders",
 										resDetails.toString());
-								if(resDetails.size()==0){
+								if (resDetails.size() == 0) {
 									bookNowButton(false);
 								}
 								setDbMarker();
@@ -376,6 +399,27 @@ public class DashboardActivity extends AppCompatActivity implements
 	protected void onResume() {
 		super.onResume();
 		isPaused = false;
+
+		mMap.clear();
+		bookNowButton(false);
+		if (!isPaused) {
+			noInternet.networkError(context);
+			if (noInternet.isOnline(context)) {
+
+				setUserMarker(uLat, uLng);
+				
+				long currReqTime = System.currentTimeMillis();
+				Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+				long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+				Log.d("Dashboard_LastRiderRequest", lastReq+"");
+				long timeGap = currReqTime - lastReq;
+				Log.d("Dashboard_RequestTimeGap", timeGap+"");
+				if(timeGap > 180000){
+					makeRiderReq(postRider);
+				}
+			}
+		}
+
 	};
 
 	@Override

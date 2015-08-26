@@ -1,0 +1,6 @@
+package com.tanmay.ayesapdevtest;
+
+public class ConstantClass {
+
+	final public static String baseUrl = "http://52.76.37.110/api";
+}

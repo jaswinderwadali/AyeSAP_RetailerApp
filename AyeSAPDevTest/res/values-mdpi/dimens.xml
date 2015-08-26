@@ -73,7 +73,6 @@
     <dimen name="headerLeftMargin">16dp</dimen>
     <dimen name="settingButtonPadding">14dp</dimen>
     <dimen name="settingButtonLeftPadding">10dp</dimen>
-    
     <dimen name="drawerListBottom">88dp</dimen>
     <dimen name="custMobPickup">14sp</dimen>
     <dimen name="custMobNoPickup">15sp</dimen>
@@ -85,5 +84,14 @@
     <dimen name="bookNowHintBottom">30dp</dimen>
     <dimen name="bookNowHintBottomExtra">40dp</dimen>
     <dimen name="bookNowHintLeft">6dp</dimen>
+    <dimen name="regButtonLeft">4dp</dimen>
+    <dimen name="summaryHeading">22sp</dimen>
+    <dimen name="summaryHeadingPadding">10dp</dimen>
+    <dimen name="summaryTitlePadding">10dp</dimen>
+    <dimen name="summaryRowPadding">14dp</dimen>
+    
+    <dimen name="addressRight">16dp</dimen>
+    <dimen name="bookedAtTop">2dp</dimen>
+<dimen name="bikeLeftMargin">16dp</dimen>
     
 </resources>

@@ -91,20 +91,20 @@
         android:id="@+id/bikeIcon"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/smallIconHeight"
-        android:layout_alignTop="@+id/dbName"
-        android:layout_marginRight="@dimen/deliveredIconTextSpace"
-        android:layout_toLeftOf="@+id/dbName"
+        android:layout_alignTop="@+id/dbNumber"
+        android:layout_toRightOf="@+id/dbNumber"
+        android:layout_marginLeft="@dimen/bikeLeftMargin"
         android:src="@drawable/bike" />
 
     <TextView
         android:id="@+id/dbName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/dbNumber"
-        android:layout_marginRight="@dimen/deliveredNumberRight"
+        android:layout_alignTop="@+id/bikeIcon"
+        android:layout_toRightOf="@+id/bikeIcon"
         android:text="Name"
         android:textColor="@color/numberText"
+        android:layout_marginLeft="@dimen/deliveredIconTextSpace"
         android:textSize="@dimen/pickupRowNumber" 
         android:visibility="visible"/>
 
@@ -115,19 +115,11 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="@dimen/cardPadding"
         android:layout_below="@+id/dbNumber"
-        android:text="Request "
+        android:text="Rider on the way"
         android:textColor="@color/orderIdText"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/statusText"
-        android:layout_toRightOf="@+id/statusText"
-        android:text="successfully assigned"
-        android:visibility="gone"
-        android:textColor="@color/orderIdText" />
+    
     
     <TextView
         android:id="@+id/bookedText"
@@ -136,7 +128,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/statusText"
         android:text="Booked at "
-        android:layout_marginTop="@dimen/cardPadding"
+        android:layout_marginTop="@dimen/bookedAtTop"
         android:textColor="@color/timerText" />
 
     <TextView

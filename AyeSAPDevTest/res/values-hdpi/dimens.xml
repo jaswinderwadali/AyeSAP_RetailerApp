@@ -92,5 +92,6 @@
     
     <dimen name="addressRight">16dp</dimen>
     <dimen name="bookedAtTop">2dp</dimen>
-
+<dimen name="bikeLeftMargin">16dp</dimen>
+    
 </resources>

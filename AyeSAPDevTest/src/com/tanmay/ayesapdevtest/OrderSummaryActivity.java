@@ -16,8 +16,8 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
 	private SwipeRefreshLayout swipeContainer;
 
-	TextView todayPickup, todayOutForDel, todayDelivered, todayCancelled, todayFailed;
-	TextView allPickup, allOutForDel, allDelivered, allCancelled, allFailed;
+	TextView todayPickup, todayOutForDel, todayDelivered, todayFailed, todayCancelled;
+	TextView allPickup, allOutForDel, allDelivered, allFailed, allCancelled;
 
 	int a, b, c, d, e, f, g, h, i, j;
 
@@ -44,7 +44,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
 		pDialog = new ProgressDialog(this);
 		pDialog.setMessage("Loading...");
-		pDialog.setCancelable(false);
+		pDialog.setCancelable(true);
 		pDialog.show();
 
 		latestData = new LatestData(getApplicationContext(),
@@ -53,14 +53,14 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 		todayPickup = (TextView) findViewById(R.id.todayPickupNum);
 		todayOutForDel = (TextView) findViewById(R.id.todayOutForDelNum);
 		todayDelivered = (TextView) findViewById(R.id.todayDeliveredNum);
-		todayCancelled = (TextView) findViewById(R.id.todayCancelledNum);
 		todayFailed = (TextView) findViewById(R.id.todayFailedNum);
+		todayCancelled = (TextView) findViewById(R.id.todayCancelledNum);
 
 		allPickup = (TextView) findViewById(R.id.allPickupNum);
 		allOutForDel = (TextView) findViewById(R.id.allOutForDelNum);
 		allDelivered = (TextView) findViewById(R.id.allDeliveredNum);
-		allCancelled = (TextView) findViewById(R.id.allCancelledNum);
 		allFailed = (TextView) findViewById(R.id.allFailedNum);
+		allCancelled = (TextView) findViewById(R.id.allCancelledNum);
 
 		swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 		// Setup refresh listener which triggers new data loading
@@ -93,22 +93,22 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 		d = LatestData.pickupTCount;
 		e = LatestData.deliveryTCount;
 		f = LatestData.deliveredTCount;
-		g = LatestData.cancelledCount;
-		h = LatestData.cancelledTCount;
 		i = LatestData.failedCount;
 		j = LatestData.failedTCount;
-
+		g = LatestData.cancelledCount;
+		h = LatestData.cancelledTCount;
+		
 		todayPickup.setText(a + " ");
 		todayOutForDel.setText(b + " ");
 		todayDelivered.setText(c + " ");
-		todayCancelled.setText(g + " ");
 		todayFailed.setText(i + " ");
+		todayCancelled.setText(g + " ");
 		
 		allPickup.setText(d + " ");
 		allOutForDel.setText(e + " ");
 		allDelivered.setText(f + " ");
-		allCancelled.setText(h + " ");
 		allFailed.setText(j + " ");
+		allCancelled.setText(h + " ");
 		swipeContainer.setRefreshing(false);
 
 	}

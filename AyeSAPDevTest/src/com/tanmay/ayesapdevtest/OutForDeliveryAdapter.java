@@ -53,15 +53,9 @@ public class OutForDeliveryAdapter extends BaseExpandableListAdapter {
 
 		TextView customerName = (TextView) convertview.findViewById(R.id.name);
 		TextView addLine = (TextView) convertview.findViewById(R.id.addLine);
-		// TextView addLine2 = (TextView)
-		// convertview.findViewById(R.id.addLine2);
-		// TextView addLine3 = (TextView)
-		// convertview.findViewById(R.id.addLine3);
 
 		customerName.setText(childItems.getCustomerName());
 		addLine.setText(childItems.getCustomerAddress());
-		// addLine2.setText(childItems.getAddLine2());
-		// addLine3.setText(childItems.getAddLine3());
 
 		return convertview;
 	}
@@ -106,11 +100,17 @@ public class OutForDeliveryAdapter extends BaseExpandableListAdapter {
 		TextView orderAmt = (TextView) convertview.findViewById(R.id.amount);
 		TextView orderId = (TextView) convertview.findViewById(R.id.orderId);
 		TextView bookedAt = (TextView) convertview.findViewById(R.id.time);
-
+		TextView status = (TextView) convertview.findViewById(R.id.statusText);
+		TextView resNum = (TextView) convertview.findViewById(R.id.dbNumber);
+		TextView resName = (TextView) convertview.findViewById(R.id.dbName);
+		
 		orderId.setText(parentItems.getOrderId());
 		customerMob.setText(parentItems.getCustomerMobile());
 		orderAmt.setText(parentItems.getOrderAmount());
-
+		status.setText(parentItems.getStatus());
+		resNum.setText(parentItems.getResMobile());
+		resName.setText(parentItems.getResName());
+		
 		String bookNT = parentItems.getBookNowTime();
 
 		if (bookNT != null && !bookNT.isEmpty()) {

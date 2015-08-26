@@ -29,9 +29,9 @@ public class LatestData {
 	public final String TAG = "Latest Data";
 
 	public static List<Parent> outForPickupParent, outForDeliveryParent,
-			deliveredParent, failedParent, cancelledParent;
+			deliveredParent, failedParent;
 	public static HashMap<String, Child> outForPickupChild,
-			outForDeliveryChild, deliveredChild, failedChild, cancelledChild;
+			outForDeliveryChild, deliveredChild, failedChild;
 	SharedPreferences sharedPreferences;
 	Editor editor;
 	String rId;
@@ -49,8 +49,9 @@ public class LatestData {
 
 	}
 
-	static public int pickupCount, deliveryCount, deliveredCount, failedCount, cancelledCount, pickupTCount,
-			deliveryTCount, deliveredTCount, failedTCount, cancelledTCount ;
+	static public int pickupCount, deliveryCount, deliveredCount, failedCount,
+			cancelledCount, pickupTCount, deliveryTCount, deliveredTCount,
+			failedTCount, cancelledTCount;
 	static public int diffMin;
 
 	public String url = ConstantClass.baseUrl + "/order/getOrdersByRetailer";
@@ -63,20 +64,18 @@ public class LatestData {
 		outForDeliveryParent = new ArrayList<Parent>();
 		deliveredParent = new ArrayList<Parent>();
 		failedParent = new ArrayList<Parent>();
-		cancelledParent = new ArrayList<Parent>();
 
 		outForPickupChild = new HashMap<String, Child>();
 		outForDeliveryChild = new HashMap<String, Child>();
 		deliveredChild = new HashMap<String, Child>();
 		failedChild = new HashMap<String, Child>();
-		cancelledChild = new HashMap<String, Child>();
 
 		pickupCount = 0;
 		deliveryCount = 0;
 		deliveredCount = 0;
 		failedCount = 0;
 		cancelledCount = 0;
-		
+
 		pickupTCount = 0;
 		deliveryTCount = 0;
 		deliveredTCount = 0;
@@ -150,7 +149,14 @@ public class LatestData {
 										+ ",  " + date);
 
 								if (order.optString("currentStatus")
-										.equalsIgnoreCase("Pending")) {
+										.equalsIgnoreCase("Pending")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Unassigned")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Not Seen")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Arrived for Pick Up")) {
 									outForPickupParent.add(parentItem);
 									outForPickupChild.put(parentItem.orderId,
 											childItem);
@@ -159,9 +165,29 @@ public class LatestData {
 										pickupCount++;
 									}
 
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Arrived for Pick Up")) {
+										parentItem.setStatus("Rider arrived.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase("Unassigned")
+											|| order.optString("currentStatus")
+													.equalsIgnoreCase(
+															"Not Seen")
+											|| order.optString("currentStatus")
+													.equalsIgnoreCase("Pending")) {
+										parentItem.setStatus("Rider on the way.");
+									}
+
 								}
 								if (order.optString("currentStatus")
-										.equalsIgnoreCase("Pending")) {
+										.equalsIgnoreCase("Enroute")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Reached Delivery Point")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Rescheduled by Customer")) {
 									outForDeliveryParent.add(parentItem);
 									outForDeliveryChild.put(parentItem.orderId,
 											childItem);
@@ -169,38 +195,86 @@ public class LatestData {
 									if (bDate == date) {
 										deliveryCount++;
 									}
+
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase("Enroute")) {
+										parentItem
+												.setStatus("Rider on the way.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Reached Delivery Point")) {
+										parentItem.setStatus("Rider  reached.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Rescheduled by Customer")) {
+										parentItem
+												.setStatus("Order rescheduled by customer.");
+									}
 								}
 								if (order.optString("currentStatus")
-										.equalsIgnoreCase("Completed")) {
+										.equalsIgnoreCase("Delivered")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Pick Up Cancelled")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Cancelled by Customer")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Rejected")) {
 
-									SimpleDateFormat sdf = new SimpleDateFormat(
-											"yyyy-MM-dd'T'HH:mm:ss'+0530'");
-									String[] utArray = order.optString(
-											"updateTime").split(" ");
-									String newUt = utArray[0] + "T"
-											+ utArray[1] + "+0530";
-									Log.d("LatestData_UpdatedTime", newUt + "");
-									Log.d("LatestData_BookNowTime",
-											order.optString("bookNowTime"));
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase("Delivered")) {
 
-									try {
-										Date date_bnt = (Date) sdf.parse(order
-												.optString("bookNowTime"));
-										Log.d("LatestData_BookNowTime",
-												date_bnt + "");
-										Date date_ut = (Date) sdf.parse(newUt);
-										Log.d("LatestData_UpdateTime", date_ut
+										SimpleDateFormat sdf = new SimpleDateFormat(
+												"yyyy-MM-dd'T'HH:mm:ss'+0530'");
+										String[] utArray = order.optString(
+												"updateTime").split(" ");
+										String newUt = utArray[0] + "T"
+												+ utArray[1] + "+0530";
+										Log.d("LatestData_UpdatedTime", newUt
 												+ "");
-										long timeDiff = date_ut.getTime()
-												- date_bnt.getTime();
-										diffMin = (int) (timeDiff / 60000);
-										Log.d("LatestData_TimeDifference",
-												timeDiff + "");
-										parentItem.setDelTime(diffMin);
+										Log.d("LatestData_BookNowTime",
+												order.optString("bookNowTime"));
 
-									} catch (ParseException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										try {
+											Date date_bnt = (Date) sdf.parse(order
+													.optString("bookNowTime"));
+											Log.d("LatestData_BookNowTime",
+													date_bnt + "");
+											Date date_ut = (Date) sdf
+													.parse(newUt);
+											Log.d("LatestData_UpdateTime",
+													date_ut + "");
+											long timeDiff = date_ut.getTime()
+													- date_bnt.getTime();
+											diffMin = (int) (timeDiff / 60000);
+											Log.d("LatestData_TimeDifference",
+													timeDiff + "");
+											parentItem.setDelTime(diffMin);
+
+										} catch (ParseException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Cancelled by Customer")) {
+										parentItem
+												.setStatus("Cancelled by customer.");
+										parentItem.setDelTime(-5);
+
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Pick Up Cancelled")) {
+										parentItem
+												.setStatus("Order cancelled by retailer.");
+										parentItem.setDelTime(-5);
+
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase("Rejected")) {
+										parentItem.setStatus("Order rejected.");
+										parentItem.setDelTime(-5);
+
 									}
 
 									deliveredParent.add(parentItem);
@@ -212,24 +286,20 @@ public class LatestData {
 									}
 								}
 								if (order.optString("currentStatus")
-										.equalsIgnoreCase("Cancelled")) {
-//									outForDeliveryParent.add(parentItem);
-//									outForDeliveryChild.put(parentItem.orderId,
-//											childItem);
-									cancelledTCount++;
-									if (bDate == date) {
-										cancelledCount++;
-									}
-								}
-								
-								if (order.optString("currentStatus")
-										.equalsIgnoreCase("Failed")) {
-//									outForDeliveryParent.add(parentItem);
-//									outForDeliveryChild.put(parentItem.orderId,
-//											childItem);
+										.equalsIgnoreCase(
+												"Cancelled by Customer")) {
 									failedTCount++;
 									if (bDate == date) {
 										failedCount++;
+									}
+								}
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase("Pick Up Cancelled")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Rejected")) {
+									cancelledTCount++;
+									if (bDate == date) {
+										cancelledCount++;
 									}
 								}
 

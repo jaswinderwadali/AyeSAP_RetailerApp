@@ -114,19 +114,12 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/dbNumber"
         android:layout_marginTop="@dimen/cardPadding"
-        android:text="Request "
+        android:text="Rider on the way"
         android:textColor="@color/orderIdText"
         android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/statusText"
-        android:layout_toRightOf="@+id/statusText"
-        android:text="successfully received."
-        android:textColor="@color/orderIdText" />
-
+    
+    
     <TextView
         android:id="@+id/bookedText"
         android:layout_width="wrap_content"

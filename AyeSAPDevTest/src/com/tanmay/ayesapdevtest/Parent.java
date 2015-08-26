@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Parent {
 
 	String orderId, orderAmount, orderStatusBackend, currentStatusText,
-			bookNowTime;
+			bookNowTime, status;
 	int delTime;
 
 	String customerMobile;
@@ -91,6 +91,14 @@ public class Parent {
 
 	public void setDelTime(int delTime) {
 		this.delTime = delTime;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

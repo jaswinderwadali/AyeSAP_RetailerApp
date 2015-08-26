@@ -1,0 +1,337 @@
+package com.tanmay.ayesapdevtest;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Log;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+public class LatestData {
+
+	public final String TAG = "Latest Data";
+
+	public static List<Parent> outForPickupParent, outForDeliveryParent,
+			deliveredParent, failedParent;
+	public static HashMap<String, Child> outForPickupChild,
+			outForDeliveryChild, deliveredChild, failedChild;
+	SharedPreferences sharedPreferences;
+	Editor editor;
+	String rId;
+	String rMob;
+
+	public LatestData(Context context, FetchData theListener) {
+		super();
+		this.context = context;
+		this.theListener = theListener;
+		sharedPreferences = context.getSharedPreferences("Reg", 0);
+		editor = sharedPreferences.edit();
+
+		rId = sharedPreferences.getString("rId", null);
+		rMob = sharedPreferences.getString("rMobile", null);
+
+	}
+
+	static public int pickupCount, deliveryCount, deliveredCount, failedCount,
+			cancelledCount, pickupTCount, deliveryTCount, deliveredTCount,
+			failedTCount, cancelledTCount;
+	static public int diffMin;
+
+	public String url = ConstantClass.baseUrl + "/order/getOrdersByRetailer";
+	public Context context;
+
+	public FetchData theListener;
+
+	public void jsonReqLatestData() {
+		outForPickupParent = new ArrayList<Parent>();
+		outForDeliveryParent = new ArrayList<Parent>();
+		deliveredParent = new ArrayList<Parent>();
+		failedParent = new ArrayList<Parent>();
+
+		outForPickupChild = new HashMap<String, Child>();
+		outForDeliveryChild = new HashMap<String, Child>();
+		deliveredChild = new HashMap<String, Child>();
+		failedChild = new HashMap<String, Child>();
+
+		pickupCount = 0;
+		deliveryCount = 0;
+		deliveredCount = 0;
+		failedCount = 0;
+		cancelledCount = 0;
+
+		pickupTCount = 0;
+		deliveryTCount = 0;
+		deliveredTCount = 0;
+		failedTCount = 0;
+		cancelledTCount = 0;
+
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("retailerId", rId);
+			// jsonObject.put("mobile", rMob);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("LatestData_JSONSent", jsonObject + "");
+
+		JsonObjectRequest jsonArrayReq = new JsonObjectRequest(Method.POST,
+				url, jsonObject, new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject response) {
+						// TODO Auto-generated method stub
+
+						Log.d("LatestData_Response_Orders", response + "");
+						try {
+							JSONArray details = response
+									.getJSONArray("details");
+							for (int i = 0; i < details.length(); i++) {
+
+								JSONObject order = details.getJSONObject(i);
+
+								Parent parentItem = new Parent();
+								Child childItem = new Child();
+
+								parentItem.setOrderId(order
+										.optString("orderId"));
+								parentItem.setOrderAmount(order
+										.optString("orderAmount"));
+								parentItem.setOrderStatusBackend(order
+										.optString("orderStatusBackend"));
+								parentItem.setCurrentStatusText(order
+										.optString("currentStatus"));
+								parentItem.setCustomerMobile(order
+										.optString("customerMobile"));
+								parentItem.setBookNowTime(order
+										.optString("bookNowTime"));
+								parentItem.setResMobile(order
+										.optString("resMobile"));
+								parentItem.setResName(order
+										.optString("resName"));
+
+								childItem.setOrderId(order.optString("orderId"));
+								childItem.setCustomerName(order
+										.optString("custName"));
+								childItem.setCustomerAddress(order
+										.optString("custFullAddress"));
+
+								String bookNowTime = order
+										.optString("bookNowTime");
+								String bDateStr = "0";
+								if (!bookNowTime.isEmpty()) {
+									bDateStr = order.optString("bookNowTime")
+											.substring(8, 10);
+								}
+
+								int bDate = Integer.parseInt(bDateStr);
+								Calendar c = Calendar.getInstance();
+								int date = c.get(Calendar.DATE);
+
+								Log.d("LatestData_BookTime_CurrentTime", bDate
+										+ ",  " + date);
+
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase("Pending")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Unassigned")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Not Seen")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Arrived for Pick Up")) {
+									outForPickupParent.add(parentItem);
+									outForPickupChild.put(parentItem.orderId,
+											childItem);
+									pickupTCount++;
+									if (bDate == date) {
+										pickupCount++;
+									}
+
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Arrived for Pick Up")) {
+										parentItem.setStatus("Rider arrived.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase("Unassigned")
+											|| order.optString("currentStatus")
+													.equalsIgnoreCase(
+															"Not Seen")
+											|| order.optString("currentStatus")
+													.equalsIgnoreCase("Pending")) {
+										parentItem.setStatus("Rider arrived.");
+									}
+
+								}
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase("Enroute")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Reached Delivery Point")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Rescheduled by Customer")) {
+									outForDeliveryParent.add(parentItem);
+									outForDeliveryChild.put(parentItem.orderId,
+											childItem);
+									deliveryTCount++;
+									if (bDate == date) {
+										deliveryCount++;
+									}
+
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase("Enroute")) {
+										parentItem
+												.setStatus("Rider on the way.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Reached Delivery Point")) {
+										parentItem.setStatus("Rider  reached.");
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Rescheduled by Customer")) {
+										parentItem
+												.setStatus("Order rescheduled by customer.");
+									}
+								}
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase("Delivered")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Pick Up Cancelled")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase(
+														"Cancelled by Customer")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Rejected")) {
+
+									if (order.optString("currentStatus")
+											.equalsIgnoreCase("Delivered")) {
+
+										SimpleDateFormat sdf = new SimpleDateFormat(
+												"yyyy-MM-dd'T'HH:mm:ss'+0530'");
+										String[] utArray = order.optString(
+												"updateTime").split(" ");
+										String newUt = utArray[0] + "T"
+												+ utArray[1] + "+0530";
+										Log.d("LatestData_UpdatedTime", newUt
+												+ "");
+										Log.d("LatestData_BookNowTime",
+												order.optString("bookNowTime"));
+
+										try {
+											Date date_bnt = (Date) sdf.parse(order
+													.optString("bookNowTime"));
+											Log.d("LatestData_BookNowTime",
+													date_bnt + "");
+											Date date_ut = (Date) sdf
+													.parse(newUt);
+											Log.d("LatestData_UpdateTime",
+													date_ut + "");
+											long timeDiff = date_ut.getTime()
+													- date_bnt.getTime();
+											diffMin = (int) (timeDiff / 60000);
+											Log.d("LatestData_TimeDifference",
+													timeDiff + "");
+											parentItem.setDelTime(diffMin);
+
+										} catch (ParseException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Cancelled by Customer")) {
+										parentItem
+												.setStatus("Cancelled by customer.");
+
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase(
+													"Pick Up Cancelled")) {
+										parentItem
+												.setStatus("Order cancelled by retailer.");
+
+									} else if (order.optString("currentStatus")
+											.equalsIgnoreCase("Rejected")) {
+										parentItem.setStatus("Order rejected.");
+
+									}
+
+									deliveredParent.add(parentItem);
+									deliveredChild.put(parentItem.orderId,
+											childItem);
+									deliveredTCount++;
+									if (bDate == date) {
+										deliveredCount++;
+									}
+								}
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase(
+												"Cancelled by Customer")) {
+									failedTCount++;
+									if (bDate == date) {
+										failedCount++;
+									}
+								}
+								if (order.optString("currentStatus")
+										.equalsIgnoreCase("Pick Up Cancelled")
+										|| order.optString("currentStatus")
+												.equalsIgnoreCase("Rejected")) {
+									cancelledTCount++;
+									if (bDate == date) {
+										cancelledCount++;
+									}
+								}
+
+							}
+
+							Collections.reverse(outForPickupParent);
+							Collections.reverse(outForDeliveryParent);
+							Collections.reverse(deliveredParent);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						editor.putInt("pickupCount", pickupCount);
+						editor.putInt("deliveryCount", deliveryCount);
+						editor.putInt("deliveredCount", deliveredCount);
+						editor.commit();
+						theListener.displayData();
+
+					}
+
+				}, new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						// TODO Auto-generated method stub
+						Log.d("VolleyError_LatestData", arg0 + "");
+						theListener.displayData();
+					}
+
+				});
+
+		jsonArrayReq.setRetryPolicy(new DefaultRetryPolicy(0,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+		AppController.getInstance().addToRequestQueue(jsonArrayReq);
+	}
+}

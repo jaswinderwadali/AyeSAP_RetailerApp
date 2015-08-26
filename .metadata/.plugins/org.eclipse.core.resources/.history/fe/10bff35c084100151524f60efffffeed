@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/delievredRowPadding" >
+
+    <TextView
+        android:id="@+id/orderIdTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Order ID. "
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/deliveredOrder" />
+
+    <TextView
+        android:id="@+id/orderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/orderIdTitle"
+        android:layout_toRightOf="@+id/orderIdTitle"
+        android:text="### ###"
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/deliveredOrder" />
+
+    <TextView
+        android:id="@+id/customerMobText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/orderIdTitle"
+        android:text="Customer Mob: "
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/custMobNoPickup" />
+
+    <TextView
+        android:id="@+id/customerMob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/customerMobText"
+        android:layout_toRightOf="@+id/customerMobText"
+        android:text="### ### ###"
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/custMobNoPickup" />
+
+    <ImageView
+        android:id="@+id/callIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/smallIconHeight"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/customerMobText"
+        android:layout_marginTop="@dimen/pickupVerticalSpace"
+        android:src="@drawable/call" />
+
+    <TextView
+        android:id="@+id/dbNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/callIcon"
+        android:layout_marginLeft="@dimen/deliveredIconTextSpace"
+        android:layout_toRightOf="@+id/callIcon"
+        android:text="#### ######"
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/deliveredName"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/rupees"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/smallIconHeight"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/amount"
+        android:text="Rs. "
+        android:textColor="@color/timerText"
+        android:textSize="@dimen/deliveredOrder" />
+
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="###"
+        android:textColor="@color/timerText"
+        android:textSize="@dimen/deliveredOrder" />
+
+    <ImageView
+        android:id="@+id/bikeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/smallIconHeight"
+        android:layout_alignTop="@+id/dbName"
+        android:layout_marginRight="@dimen/deliveredIconTextSpace"
+        android:layout_toLeftOf="@+id/dbName"
+        android:src="@drawable/bike" />
+
+    <TextView
+        android:id="@+id/dbName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/dbNumber"
+        android:layout_marginRight="@dimen/deliveredNumberRight"
+        android:text="Name"
+        android:textColor="@color/numberText"
+        android:textSize="@dimen/pickupRowNumber"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/dbNumber"
+        android:layout_marginTop="@dimen/cardPadding"
+        android:text="Request successfully received."
+        android:textColor="@color/orderIdText"
+        android:visibility="visible" />
+
+    
+    
+    <TextView
+        android:id="@+id/bookedText"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/smallIconHeight"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/statusText"
+        android:layout_marginTop="@dimen/bookedAtTop"
+        android:text="Booked at "
+        android:textColor="@color/timerText" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/bookedText"
+        android:layout_toRightOf="@+id/bookedText"
+        android:text="###"
+        android:textColor="@color/timerText" />
+
+    <ImageView
+        android:id="@+id/moreInfo"
+        android:layout_width="@dimen/moreInfoWidth"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/bookedText"
+        android:paddingTop="3dp"
+        android:src="@drawable/downarrow" />
+
+    <TextView
+        android:id="@+id/moreInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/moreInfo"
+        android:layout_toLeftOf="@+id/moreInfo"
+        android:text="More Info " />
+
+</RelativeLayout>
