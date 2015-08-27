@@ -1,0 +1,87 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/DrawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="7dp"
+    android:fitsSystemWindows="true" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/toolbar" >
+        </include>
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/mapTopMargin" />
+
+        <TextView
+            android:id="@+id/nearestNotif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/map"
+            android:layout_below="@+id/tool_bar"
+            android:layout_centerHorizontal="true"
+            android:background="#AA000000"
+            android:gravity="center"
+            android:paddingBottom="@dimen/notificationPadding"
+            android:paddingTop="@dimen/notificationPadding"
+            android:text="@string/nearestNotif"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/bookNowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_booknow"
+            android:paddingBottom="@dimen/bookNowButtonPadding"
+            android:paddingTop="@dimen/bookNowButtonPadding"
+            android:text="@string/bookNowButton"
+            
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="@dimen/navBarWidth"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/RecyclerView"
+            android:layout_width="@dimen/navBarWidth"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="@dimen/drawerListBottom"
+            android:layout_gravity="left"
+            android:background="@color/white"
+            android:scrollbars="vertical" >
+        </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/navDrawerBottom"
+            android:background="@drawable/button_logout"
+            android:paddingLeft="@dimen/logoutButtonPadding"
+            android:paddingRight="@dimen/logoutButtonPadding"
+            android:text="@string/logoutButton"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

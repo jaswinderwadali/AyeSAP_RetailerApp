@@ -1,0 +1,576 @@
+package com.tanmay.ayesapdevtest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class DashboardActivity extends AppCompatActivity implements
+		OnButtonClickListener {
+
+	Context context;
+
+	TextView eta;
+	Button bookNow, logOut;
+	Toolbar toolbar;
+	GoogleMap mMap;
+	RecyclerView mRecyclerView;
+	RecyclerView.Adapter mAdapter;
+	RecyclerView.LayoutManager mLayoutManager;
+	DrawerLayout Drawer;
+	ActionBarDrawerToggle mDrawerToggle;
+	Boolean isPaused = false;
+
+	NoInternet noInternet;
+
+	SharedPreferences sharedPreferences;
+	Editor editor;
+
+	String TITLES[] = { "Home", "Out for Pickup", "Out for Delivery",
+			"Completed", "Order Summary", "Settings", "About AyeSAP" };
+	int PROFILE = R.drawable.dp;
+
+	String rDetails, NAME, zone, userLat, userLng, retType, retLatitude,
+			retLongitude;
+	String url = ConstantClass.baseUrl + "/resource/getAllRiderStatus";
+	String url_logout = ConstantClass.baseUrl + "/retailer/logOut";
+	String TAG = "Main Activity";
+	String riderLat = "";
+	String riderLng = "";
+	JSONObject retDetails, postRider;
+	List<JSONObject> resDetails;
+	List<String> riderMarkLat, riderMarkLng, riderName;
+	ProgressDialog pDialog;
+	int min;
+	Double uLat, uLng;
+
+	Handler handler = new Handler();
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (!isGooglePlayServicesAvailable()) {
+			finish();
+		}
+		setContentView(R.layout.activity_dashboard);
+		context = this;
+		noInternet = new NoInternet();
+		eta = (TextView) findViewById(R.id.nearestNotif);
+		bookNowButton(false);
+		sharedPreferences = getSharedPreferences("Reg", 0);
+		editor = sharedPreferences.edit();
+
+		rDetails = sharedPreferences.getString("retailerDetails", null);
+		try {
+			retDetails = new JSONObject(rDetails);
+			NAME = retDetails.getString("name");
+			userLat = retDetails.getString("latitude");
+			userLng = retDetails.getString("longitude");
+			retType = retDetails.getString("retailerType");
+			zone = retDetails.getString("zone");
+			retLatitude = retDetails.getString("latitude");
+			retLongitude = retDetails.getString("longitude");
+			postRider = new JSONObject();
+			postRider.put("zoneId", zone);
+			postRider.put("latitude", retLatitude);
+			postRider.put("longitude", retLongitude);
+			if (retType != null && !retType.isEmpty()) {
+				if (retType.equalsIgnoreCase("Food")) {
+					postRider.put("retailerType", retType);
+				} else if (retType.equalsIgnoreCase("Grocery")) {
+					postRider.put("retailerType", retType);
+				} else {
+					postRider.put("retailerType", retType);
+				}
+			} else {
+				postRider.put("retailerType", "");
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		toolbar = (Toolbar) findViewById(R.id.tool_bar);
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
+		TextView title = (TextView) toolbar.findViewById(R.id.title);
+		title.setText("");
+		ImageView logo = (ImageView) toolbar.findViewById(R.id.logo);
+		logo.setVisibility(View.VISIBLE);
+
+		mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
+		mRecyclerView.setHasFixedSize(true);
+		mAdapter = new MyAdapter(this, TITLES, NAME, PROFILE);
+		MyAdapter.click = DashboardActivity.this;
+		mRecyclerView.setAdapter(mAdapter);
+		mLayoutManager = new LinearLayoutManager(this);
+		mRecyclerView.setLayoutManager(mLayoutManager);
+		Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
+		mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar,
+				R.string.openDrawer, R.string.closeDrawer) {
+
+			@Override
+			public void onDrawerOpened(View drawerView) {
+				super.onDrawerOpened(drawerView);
+			}
+
+			@Override
+			public void onDrawerClosed(View drawerView) {
+				super.onDrawerClosed(drawerView);
+			}
+
+		};
+		Drawer.setDrawerListener(mDrawerToggle);
+		mDrawerToggle.syncState();
+
+		logOut = (Button) findViewById(R.id.logoutButton);
+		logOut.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				noInternet.networkError(context);
+				if (noInternet.isOnline(context)) {
+
+					makeLogoutReq();
+				}
+			}
+		});
+
+		noInternet.networkError(context);
+		if (noInternet.isOnline(context)) {
+			setUpMapIfNeeded();
+		}
+		if (userLat != null && !userLat.isEmpty() && userLng != null
+				&& !userLng.isEmpty()) {
+			uLat = Double.parseDouble(userLat);
+			uLng = Double.parseDouble(userLng);
+			Log.d("Dashboard_UserCoords", userLat + ", " + userLng);
+			noInternet.networkError(context);
+			if (noInternet.isOnline(context)) {
+				setUserMarker(uLat, uLng);
+			}
+		}
+		resDetails = new ArrayList<JSONObject>();
+		riderMarkLat = new ArrayList<String>();
+		riderMarkLng = new ArrayList<String>();
+		riderName = new ArrayList<String>();
+
+		noInternet.networkError(context);
+		if (noInternet.isOnline(context)) {
+
+			long currReqTime = System.currentTimeMillis();
+			Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+			long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+			Log.d("Dashboard_LastRiderRequest", lastReq+"");
+			long timeGap = currReqTime - lastReq;
+			Log.d("Dashboard_RequestTimeGap", timeGap+"");
+			if(timeGap > 180000){
+				makeRiderReq(postRider);
+			}
+			
+		}
+		handler.postDelayed(timedTask, 180000);
+	}
+
+	Runnable timedTask = new Runnable() {
+		@Override
+		public void run() {
+			mMap.clear();
+			bookNowButton(false);
+			if (!isPaused) {
+				noInternet.networkError(context);
+				if (noInternet.isOnline(context)) {
+
+					setUserMarker(uLat, uLng);
+					long currReqTime = System.currentTimeMillis();
+					Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+					long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+					Log.d("Dashboard_LastRiderRequest", lastReq+"");
+					long timeGap = currReqTime - lastReq;
+					Log.d("Dashboard_RequestTimeGap", timeGap+"");
+					if(timeGap > 180000){
+						makeRiderReq(postRider);
+					}
+				}
+			}
+			handler.postDelayed(timedTask, 180000);
+
+		}
+	};
+
+	private void makeLogoutReq() {
+
+		pDialog = new ProgressDialog(this);
+		pDialog.setMessage("Logging Out...");
+		pDialog.show();
+		JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST,
+				url_logout, null, new Response.Listener<JSONObject>() {
+					@Override
+					public void onResponse(JSONObject response) {
+						Log.d("Dashboard_Logout_Response", response.toString());
+						pDialog.dismiss();
+
+						try {
+							String message = response.getString("message");
+							Toast.makeText(context, message, Toast.LENGTH_LONG)
+									.show();
+							editor.putBoolean("status", false);
+							editor.commit();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						Intent i = new Intent(context, MainActivity.class);
+						startActivity(i);
+						finish();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						VolleyLog.d("VolleyError_BookNow_Logout", "Error: "
+								+ error.getMessage());
+						pDialog.dismiss();
+
+					}
+				});
+
+		AppController.getInstance().addToRequestQueue(jsonObjReq);
+	}
+
+	private void makeRiderReq(JSONObject jObject) {
+		// TODO Auto-generated method stub
+		Log.d("Dashboard_Rider_Request", jObject.toString());
+
+		JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST, url,
+				jObject, new Response.Listener<JSONObject>() {
+					@Override
+					public void onResponse(JSONObject response) {
+						
+						long lastReqTime = System.currentTimeMillis();
+						editor.putLong("lastRidReq", lastReqTime);
+						editor.commit();
+						Log.d("Dashboard_LastRiderRequest", lastReqTime+"");
+						
+						Log.d("Dashboard_Rider_Response", response.toString());
+						JSONObject details, rider;
+						JSONArray resourceList;
+						JSONObject nearestRider;
+						try {
+							details = response.getJSONObject("details");
+							if (details.toString().equals("{}")) {
+								bookNowButton(false);
+							} else {
+								resourceList = details
+										.getJSONArray("resourceList");
+								nearestRider = details
+										.getJSONObject("nearestRider");
+								int leastETA = 0;
+								String resType = "";
+								// if (nearestRider.toString().equals("{}")) {
+								leastETA = details.getInt("eta");
+								resType = details.getString("resourceType");
+								// } else {
+								// leastETA = nearestRider.getInt("eta");
+								// resType = nearestRider
+								// .getString("resourceType");
+								// }
+								editor.putInt("leastETA", leastETA);
+								editor.putString("resType", resType);
+								editor.commit();
+
+								resDetails.clear();
+								for (int i = 0; i < resourceList.length(); i++) {
+
+									rider = resourceList.getJSONObject(i);
+									JSONObject location = rider
+											.getJSONObject("location");
+									String rLat = location
+											.getString("latitude");
+									String rLng = location
+											.getString("longitude");
+
+									if (rLat != null && !rLat.isEmpty()
+											&& rLng != null && !rLng.isEmpty()) {
+										resDetails.add(rider);
+										Log.d("Dashboard_RiderAdded",
+												resDetails.toString());
+									}
+
+								}
+								Log.d("Dashboard_ALLRiders",
+										resDetails.toString());
+								if (resDetails.size() == 0) {
+									bookNowButton(false);
+								}
+								setDbMarker();
+							}
+
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}, new ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						VolleyLog.d("VolleyLOG_Error Message", "Error: "
+								+ error.getMessage());
+						String jsonString = null;
+						NetworkResponse response = error.networkResponse;
+						if (response != null && response.data != null) {
+							switch (response.statusCode) {
+							case 401:
+								jsonString = new String(response.data);
+								jsonString = trimMessage(jsonString, "message");
+								if (jsonString != null)
+									displayMessage(jsonString);
+								break;
+
+							case 403:
+								jsonString = new String(response.data);
+								jsonString = trimMessage(jsonString, "message");
+								if (jsonString != null)
+									displayMessage(jsonString);
+								break;
+							}
+
+						}
+
+					}
+
+				});
+		jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(0, 10,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+		AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+	}
+
+	private void setUpMapIfNeeded() {
+		mMap = ((SupportMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.map)).getMap();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		isPaused = false;
+
+		mMap.clear();
+		bookNowButton(false);
+		if (!isPaused) {
+			noInternet.networkError(context);
+			if (noInternet.isOnline(context)) {
+
+				setUserMarker(uLat, uLng);
+				
+				long currReqTime = System.currentTimeMillis();
+				Log.d("Dashboard_CurrentRiderRequest", currReqTime+"");
+				long lastReq = sharedPreferences.getLong("lastRidReq", 0);
+				Log.d("Dashboard_LastRiderRequest", lastReq+"");
+				long timeGap = currReqTime - lastReq;
+				Log.d("Dashboard_RequestTimeGap", timeGap+"");
+				if(timeGap > 180000){
+					makeRiderReq(postRider);
+				}
+			}
+		}
+
+	};
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		isPaused = true;
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		isPaused = true;
+	}
+
+	@Override
+	public void onOptionClick(int position) {
+		// TODO Auto-generated method stub
+
+		if (position == 1) {
+			Intent i = new Intent(context, PickupNewActivity.class);
+			startActivity(i);
+		}
+		if (position == 2) {
+			Intent i = new Intent(context, OutForDeliveryActivity.class);
+			startActivity(i);
+		}
+		if (position == 3) {
+			Intent i = new Intent(context, DeliveredActivity.class);
+			startActivity(i);
+		}
+		if (position == 4) {
+			Intent i = new Intent(context, OrderSummaryActivity.class);
+			startActivity(i);
+		}
+		if (position == 5) {
+			Intent i = new Intent(context, SettingsActivity.class);
+			startActivity(i);
+		}
+		if (position == 6) {
+			Intent i = new Intent(context, AboutRetailerApp.class);
+			startActivity(i);
+		}
+		Drawer.closeDrawers();
+	}
+
+	@Override
+	public void onCardOptionClick(int position, boolean isCancel) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSettingClick(int position) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private boolean isGooglePlayServicesAvailable() {
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (ConnectionResult.SUCCESS == status) {
+			return true;
+		} else {
+			GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+			return false;
+		}
+	}
+
+	public void bookNowButton(boolean isAvailable) {
+
+		bookNow = (Button) findViewById(R.id.bookNowButton);
+		if (!isAvailable) {
+			bookNow.setEnabled(false);
+			eta.setText("No rider nearby");
+		} else {
+			bookNow.setEnabled(true);
+			bookNow.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					noInternet.networkError(context);
+					if (noInternet.isOnline(context)) {
+
+						Intent i = new Intent(context, BookNowActivity.class);
+						startActivity(i);
+					}
+				}
+			});
+		}
+
+	}
+
+	private void setUserMarker(Double latitude, Double longitude) {
+		LatLng userLoc = new LatLng(latitude, longitude);
+		Marker marker = mMap.addMarker(new MarkerOptions().position(userLoc)
+				.title("Pickup Point"));
+		mMap.moveCamera(CameraUpdateFactory.newLatLng(userLoc));
+		mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+	}
+
+	public String trimMessage(String json, String key) {
+		String trimmedString = null;
+		try {
+			JSONObject obj = new JSONObject(json);
+			trimmedString = obj.getString(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return trimmedString;
+	}
+
+	public void displayMessage(String toastString) {
+		Toast.makeText(context, toastString, Toast.LENGTH_LONG).show();
+	}
+
+	private void setDbMarker() {
+		if (resDetails.size() == 0) {
+			bookNowButton(false);
+			Log.d("Dashboard_SetDBMarker", "No Resource");
+		} else {
+			for (int i = 0; i < resDetails.size(); i++) {
+
+				JSONObject resource = resDetails.get(i);
+				JSONObject location;
+				String rLat = "";
+				String rLng = "";
+				Double dbLat, dbLng;
+				try {
+					location = resource.getJSONObject("location");
+					rLat = location.getString("latitude");
+					rLng = location.getString("longitude");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				dbLat = Double.parseDouble(rLat);
+				dbLng = Double.parseDouble(rLng);
+				LatLng dbLatLng = new LatLng(dbLat, dbLng);
+				Marker dbMarker = mMap.addMarker(new MarkerOptions()
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.bike))
+						.position(dbLatLng).title("Rider " + i));
+				Log.d("Dashboard_RiderAddedName", "Rider " + i);
+				bookNowButton(true);
+			}
+			int leastETA = sharedPreferences.getInt("leastETA", 0);
+			eta.setText(leastETA + " mins for nearest rider");
+		}
+	}
+
+}

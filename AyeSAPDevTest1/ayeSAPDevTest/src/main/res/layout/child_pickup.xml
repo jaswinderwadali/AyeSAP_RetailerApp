@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/delievredRowPadding" >
+
+        <TextView
+            android:id="@+id/custDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Customer Details"
+            android:textColor="@color/timerText"
+            android:textSize="@dimen/pickupRowNumber"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/custDetails"
+            android:layout_marginTop="@dimen/deliveredExpVertical"
+            android:text="Name: " />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/nameTitle"
+            android:layout_toRightOf="@+id/nameTitle"
+            android:text=" "
+            android:textSize="@dimen/pickupRowTimer" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/nameTitle"
+            android:layout_marginTop="@dimen/deliveredExpVertAddress"
+            android:text="Address:  "
+            android:textSize="@dimen/pickupRowTimer" />
+
+        <TextView
+            android:id="@+id/addLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/address"
+            android:layout_toRightOf="@+id/address"
+            android:paddingRight="@dimen/addressRight"
+            android:text="Line 01"
+            android:textSize="@dimen/pickupRowTimer" />
+
+        <!-- <TextView
+            android:id="@+id/addLine2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/addLine1"
+            android:layout_below="@+id/addLine1"
+            android:text="Line 02"
+            android:visibility="invisible"
+            android:textSize="@dimen/pickupRowTimer" />
+
+        <TextView
+            android:id="@+id/addLine3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/addLine2"
+            android:layout_below="@+id/addLine2"
+            android:text="Line 03"
+            android:visibility="invisible"
+            android:textSize="@dimen/pickupRowTimer" /> -->
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/body"
+        android:background="@color/pickupDivider" />
+
+</RelativeLayout>

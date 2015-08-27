@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="buttonEnabled">#6CBF29</color>
+    <color name="buttonPressed">#7AC53E</color>
+    <color name="forgotPassword">#999999</color>
+    <color name="registerText01">#7F7F7F</color>
+    <color name="registerText02">#7AC53E</color>
+    <color name="toolBarBlue">#00345B</color>
+    <color name="toolBarTextBlue">#325C7B</color>
+    <color name="separator">#CCCCCC</color>
+    <color name="testColor">#FF0000</color>
+    <color name="buttonLogoutEnabled">#F56743</color>
+    <color name="buttonLogoutPressed">#F67655</color>
+    <color name="numberText">#666666</color>
+    <color name="timerText">#F56743</color>
+    <color name="pickupDivider">#B2B2B2</color>
+    <color name="orderIdText">#6CBF29</color>
+    <color name="cardMobNum">#666666</color>
+    <color name="cardBackground">#D3D3D3</color>
+    <color name="cardButtonPressed">#EBEBEB</color>
+    <color name="cardSeparater">#848484</color>
+    <color name="header01">#D4D4D4</color>
+    <color name="header02">#EBEBEB</color>
+    <color name="settingButtonMid">#EEEEEE</color>
+    <color name="settingButtonEnd">#DDDDDD</color>
+    
+    <color name="bookNowHints">#AAAAAA</color>
+    
+    <color name="bookNowDisabled">#B2B2B2</color>
+
+</resources>
