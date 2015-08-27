@@ -114,7 +114,7 @@ public class PickupNewAdapter extends BaseExpandableListAdapter implements View.
 
         customerMob.setTag(parentItems.getCustomerMobile());
         dbNumber.setTag(parentItems.getResMobile());
-        dbNumber.setOnClickListener(this);
+      //  dbNumber.setOnClickListener(this);
         customerMob.setOnClickListener(this);
 
 
